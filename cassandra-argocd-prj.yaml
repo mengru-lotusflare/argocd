@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: prj-isg-omcom-dv-childapps
+  namespace: argocd
+spec:
+  description: ISG OMCOM DV Child Apps Project
+  sourceRepos:
+    - "https://github.com/mengru-lotusflare/atlas-isg-omcom.git"
+  destinations:
+    - namespace: "*"
+      server: https://7A97A019883D103B23196EB489085B5D.gr7.ap-southeast-1.eks.amazonaws.com
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
