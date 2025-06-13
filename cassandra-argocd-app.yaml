@@ -15,6 +15,10 @@ spec:
       valueFiles:
         - values.yaml
         - dv-values.yaml
+      skipCrds: true
+      parameters:
+        - name: global.deployComponents
+          value: "false"
   destination:
     server: https://7A97A019883D103B23196EB489085B5D.gr7.ap-southeast-1.eks.amazonaws.com
     namespace: com-cassandra
