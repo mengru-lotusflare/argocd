@@ -1,42 +1,49 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: cassandra
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
-  project: prj-isg-omcom-dv-childapps
-  source:
-    repoURL: https://github.com/mengru-lotusflare/atlas-isg-omcom.git
-    path: manifests/cassandra
-    targetRevision: main
-    helm:
-      valueFiles:
-        - values.yaml
-        - dv-values.yaml
-      skipCrds: true
-      parameters:
-        - name: global.deployComponents
-          value: "false"
-  destination:
-    server: https://7A97A019883D103B23196EB489085B5D.gr7.ap-southeast-1.eks.amazonaws.com
-    namespace: com-cassandra
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-      allowEmpty: true
-    syncOptions:
-      - CreateNamespace=true
-      - ApplyOutOfSyncOnly=true
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
-  revisionHistoryLimit: 3
+  generators:
+  - list:
+      elements:
+      - name: lua-services
+        path: manifests/cassandra/charts/lua-services
+        environment: dv
+      - name: scala-services
+        path: manifests/cassandra/charts/scala-services
+        environment: dv
+  template:
+    metadata:
+      name: '{{name}}'
+      namespace: argocd
+      finalizers:
+      - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: prj-isg-omcom-dv-childapps
+      source:
+        repoURL: https://github.com/mengru-lotusflare/atlas-isg-omcom.git
+        path: '{{path}}'
+        targetRevision: main
+        helm:
+          valueFiles:
+          - values.yaml
+          - dv-values.yaml
+      destination:
+        server: https://7A97A019883D103B23196EB489085B5D.gr7.ap-southeast-1.eks.amazonaws.com
+        namespace: com-cassandra
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        retry:
+          limit: 3
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 1m
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
