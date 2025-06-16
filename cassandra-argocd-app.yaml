@@ -28,7 +28,7 @@ spec:
         helm:
           valueFiles:
           - values.yaml
-          - '{{cluster.metadata.labels.environment}}-values.yaml'
+          - dv-values.yaml
       destination:
         server: https://7A97A019883D103B23196EB489085B5D.gr7.ap-southeast-1.eks.amazonaws.com
         namespace: com-cassandra
