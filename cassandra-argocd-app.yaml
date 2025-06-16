@@ -20,12 +20,14 @@ spec:
       project: prj-isg-omcom-dv-childapps
       source:
         repoURL: https://github.com/mengru-lotusflare/atlas-isg-omcom.git
-        path: manifests/cassandra/lua-services
+        path: manifests/cassandra/charts/lua-services/charts/{{path.basename}}
         targetRevision: main
         helm:
-          # valueFiles:
-          #   - values.yaml
-          #   - dv-values.yaml
+          valueFiles:
+          - values.yaml
+          - ../values.yaml
+          - ../dv-values.yaml
+          releaseName: '{{path.basename}}'
           parameters:
             - name: subchart
               value: '{{path.basename}}'
