@@ -5,20 +5,17 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - list:
-      elements:
-      - name: prj-isg-omcom-dv-lua-services
-        path: manifests/cassandra/charts/lua-services
-        environment: dv
-      - name: prj-isg-omcom-dv-scala-services
-        path: manifests/cassandra/charts/scala-services
-        environment: dv
+    - git:
+        repoURL: https://github.com/mengru-lotusflare/atlas-isg-omcom.git
+        revision: main
+        directories:
+          - path: manifests/cassandra/lua-services/charts/*
   template:
     metadata:
-      name: '{{name}}'
+      name: '{{path.basename}}'
       namespace: argocd
       finalizers:
-      - resources-finalizer.argocd.argoproj.io
+        - resources-finalizer.argocd.argoproj.io
     spec:
       project: prj-isg-omcom-dv-childapps
       source:
@@ -27,8 +24,8 @@ spec:
         targetRevision: main
         helm:
           valueFiles:
-          - values.yaml
-          - dv-values.yaml
+            - ../values.yaml
+            - ../dv-values.yaml
       destination:
         server: https://7A97A019883D103B23196EB489085B5D.gr7.ap-southeast-1.eks.amazonaws.com
         namespace: com-cassandra
@@ -37,7 +34,7 @@ spec:
           prune: true
           selfHeal: true
         syncOptions:
-        - CreateNamespace=true
+          - CreateNamespace=true
         retry:
           limit: 3
           backoff:
