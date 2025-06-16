@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: cassandra
+  name: prj-isg-omcom-dv-cassandra-appset
   namespace: argocd
 spec:
   generators:
   - list:
       elements:
-      - name: lua-services
+      - name: prj-isg-omcom-dv-lua-services
         path: manifests/cassandra/charts/lua-services
         environment: dv
-      - name: scala-services
+      - name: prj-isg-omcom-dv-scala-services
         path: manifests/cassandra/charts/scala-services
         environment: dv
   template:
@@ -44,71 +44,3 @@ spec:
             duration: 5s
             factor: 2
             maxDuration: 1m
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: lua-services
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: prj-isg-omcom-dv-childapps
-  source:
-    repoURL: https://github.com/mengru-lotusflare/atlas-isg-omcom.git
-    path: manifests/cassandra/charts/lua-services
-    targetRevision: main
-    helm:
-      valueFiles:
-        - values.yaml
-        - ../values.yaml
-        - ../dv-values.yaml
-  destination:
-    server: https://7A97A019883D103B23196EB489085B5D.gr7.ap-southeast-1.eks.amazonaws.com
-    namespace: com-cassandra
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-    retry:
-      limit: 3
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 1m
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: scala-services
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: prj-isg-omcom-dv-childapps
-  source:
-    repoURL: https://github.com/mengru-lotusflare/atlas-isg-omcom.git
-    path: manifests/cassandra/charts/scala-services
-    targetRevision: main
-    helm:
-      valueFiles:
-        - values.yaml
-        - ../values.yaml
-        - ../dv-values.yaml
-  destination:
-    server: https://7A97A019883D103B23196EB489085B5D.gr7.ap-southeast-1.eks.amazonaws.com
-    namespace: com-cassandra
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-    retry:
-      limit: 3
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 1m
