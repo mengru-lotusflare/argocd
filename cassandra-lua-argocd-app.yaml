@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: prj-isg-omcom-dv-cassandra-appset
+  name: prj-isg-omcom-dv-cassandra-lua-appset
   namespace: argocd
 spec:
   generators:
@@ -20,7 +20,7 @@ spec:
       project: prj-isg-omcom-dv-childapps
       source:
         repoURL: https://github.com/mengru-lotusflare/atlas-isg-omcom.git
-        path: manifests/cassandra/lua-services
+        path: '{{path}}'
         targetRevision: main
         helm:
           valueFiles:
