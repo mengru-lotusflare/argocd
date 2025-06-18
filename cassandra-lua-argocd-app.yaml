@@ -20,7 +20,7 @@ spec:
       project: prj-isg-omcom-dv-childapps
       source:
         repoURL: https://github.com/mengru-lotusflare/atlas-isg-omcom.git
-        path: '{{path}}'
+        path: manifests/cassandra/lua-services
         targetRevision: main
         helm:
           valueFiles:
